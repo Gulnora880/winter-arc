@@ -44,7 +44,7 @@ export default function Settings() {
   async function save() {
     if (!user) return;
     await updateProfile(user.id, {
-      theme: theme as any,
+      theme: theme as 'dark' | 'light',
       snow_enabled: snow,
       sound_enabled: sound,
       notifications_enabled: notif,
@@ -95,7 +95,7 @@ export default function Settings() {
           <select
             className="input max-w-[200px]"
             value={theme}
-            onChange={(e) => setTheme(e.target.value)}
+            onChange={(e) => setTheme(e.target.value as "dark" | "light")}
           >
             <option value="dark">Тёмная</option>
             <option value="light">Светлая</option>
