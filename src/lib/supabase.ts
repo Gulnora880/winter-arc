@@ -1,13 +1,10 @@
 import { createClient } from "@supabase/supabase-js";
 
-const RAW_URL = "https://xzonuxmjhdpzdndxtcvk.supabase.co";
-const RAW_KEY = "сюда_вставьте_ключ_начинающийся_на_eyJ";
+const url = (import.meta.env.VITE_SUPABASE_URL ?? "").trim();
+const key = (import.meta.env.VITE_SUPABASE_ANON_KEY ?? "").trim();
 
-function cleanEnv(str: string) {
-  return str.replace(/[^\x20-\x7E]/g, "").trim();
+if (!url || !key) {
+  console.error("Не заданы VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY");
 }
-
-const url = cleanEnv(RAW_URL);
-const key = cleanEnv(RAW_KEY);
 
 export const supabase = createClient(url, key);
