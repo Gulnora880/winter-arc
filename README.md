@@ -7,4 +7,3 @@ Personal discipline & life progress system — 92-day challenge.
 2. Copy `.env.example` → `.env.local` and fill Supabase keys
 3. Run `supabase/schema.sql` in Supabase SQL Editor
 4. `npm run dev`
-
