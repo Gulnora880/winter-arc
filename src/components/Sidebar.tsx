@@ -19,18 +19,18 @@ import { useState } from "react";
 import { signOut } from "../services/auth";
 
 const items = [
-  { to: "/", label: "Dashboard", icon: LayoutDashboard, end: true },
-  { to: "/planner", label: "Daily Planner", icon: ListTodo },
-  { to: "/habits", label: "Habits", icon: Repeat },
-  { to: "/calendar", label: "Calendar", icon: Calendar },
-  { to: "/character", label: "Character", icon: User },
-  { to: "/goals", label: "Goals", icon: Target },
-  { to: "/focus", label: "Focus", icon: Timer },
-  { to: "/notes", label: "Notes", icon: StickyNote },
-  { to: "/stats", label: "Statistics", icon: BarChart3 },
-  { to: "/achievements", label: "Achievements", icon: Trophy },
-  { to: "/profile", label: "Profile", icon: User },
-  { to: "/settings", label: "Settings", icon: Settings },
+  { to: "/", label: "Главная", icon: LayoutDashboard, end: true },
+  { to: "/planner", label: "Планер", icon: ListTodo },
+  { to: "/habits", label: "Привычки", icon: Repeat },
+  { to: "/calendar", label: "Календарь", icon: Calendar },
+  { to: "/character", label: "Персонаж", icon: User },
+  { to: "/goals", label: "Цели", icon: Target },
+  { to: "/focus", label: "Фокус", icon: Timer },
+  { to: "/notes", label: "Заметки", icon: StickyNote },
+  { to: "/stats", label: "Статистика", icon: BarChart3 },
+  { to: "/achievements", label: "Достижения", icon: Trophy },
+  { to: "/profile", label: "Профиль", icon: User },
+  { to: "/settings", label: "Настройки", icon: Settings },
 ];
 
 export function Sidebar() {
