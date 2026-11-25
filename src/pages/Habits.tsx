@@ -9,14 +9,15 @@ import {
 } from "../services/habits";
 import { awardXP } from "../services/profile";
 import { XP_HABIT } from "../lib/xp";
-import { today as todayStr, daysInMonth } from "../lib/date";
+import { today as todayStr } from "../lib/date";
 import type { Habit, HabitRecord } from "../types";
 import { Modal } from "../components/Modal";
 import { Plus, Trash2 } from "lucide-react";
 import { useCompanion } from "../hooks/useCompanion";
+import { playCharacterSound } from "../sounds"; // ⬅️ ИМПОРТ ЗВУКОВ
 
 export default function Habits() {
-  const { user, refresh } = useAuth();
+  const { user, profile, refresh } = useAuth();
   const [habits, setHabits] = useState<Habit[]>([]);
   const [records, setRecords] = useState<HabitRecord[]>([]);
   const [open, setOpen] = useState(false);
@@ -39,14 +40,17 @@ export default function Habits() {
     setHabits(h);
     setRecords(r);
   }
+
   function monthStart() {
     const d = new Date();
     return new Date(d.getFullYear(), d.getMonth(), 1)
       .toISOString()
       .slice(0, 10);
   }
+
   useEffect(() => {
-    load(); /* eslint-disable-next-line */
+    load();
+    // eslint-disable-next-line
   }, [user?.id]);
 
   async function add(e: React.FormEvent) {
@@ -75,8 +79,13 @@ export default function Habits() {
     const rec = records.find((r) => r.habit_id === h.id && r.date === today);
     const c = !rec?.completed;
     await toggleHabit(h.id, user.id, today, c);
+
     if (c) {
       await awardXP(user.id, XP_HABIT, "habit");
+
+      // ⬇️ ЗВУК ПЕРСОНАЖА ПРИ ВЫПОЛНЕНИИ ПРИВЫЧКИ
+      playCharacterSound((profile?.character_id as any) || "luffy");
+
       companion.trigger("habitDone");
       await refresh();
     }
@@ -181,7 +190,9 @@ export default function Habits() {
               </div>
 
               <button
-                className={`btn w-full ${done ? "bg-accent/20 text-accent" : "btn-ghost"}`}
+                className={`btn w-full ${
+                  done ? "bg-accent/20 text-accent" : "btn-ghost"
+                }`}
                 onClick={() => toggle(h)}
               >
                 {done ? "✓ Выполнено сегодня" : "Отметить сегодня"}

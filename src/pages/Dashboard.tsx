@@ -24,6 +24,7 @@ import { useCompanion } from "../hooks/useCompanion";
 import { LevelUpToast } from "../components/LevelUpToast";
 import { Check, Clock, Flame } from "lucide-react";
 import { useNotifications } from "../hooks/useNotifications";
+import { playCharacterSound, playSound } from "../sounds"; // ⬅️ ИМПОРТ ЗВУКОВ
 
 export default function Dashboard() {
   const { user, profile, progress, refresh } = useAuth();
@@ -55,8 +56,10 @@ export default function Dashboard() {
     await touchActiveDay(user.id);
     await refresh();
   }
+
   useEffect(() => {
-    load(); /* eslint-disable-next-line */
+    load();
+    // eslint-disable-next-line
   }, [user?.id]);
 
   const tasksDone = tasks.filter((t) => t.completed).length;
@@ -72,11 +75,16 @@ export default function Dashboard() {
       completed: nowCompleted,
       completed_at: nowCompleted ? new Date().toISOString() : null,
     });
+
     if (nowCompleted) {
       const p = await awardXP(user!.id, XP_TASK, "task");
       setTasks((prev) =>
         prev.map((x) => (x.id === t.id ? { ...x, completed: true } : x)),
       );
+
+      // ⬇️ ЗВУК ПЕРСОНАЖА ПРИ ВЫПОЛНЕНИИ ЗАДАЧИ
+      playCharacterSound((profile?.character_id as any) || "luffy");
+
       companion.trigger("taskDone");
       const newDone = tasksDone + 1;
       await upsertDailyProgress(user!.id, today, {
@@ -89,12 +97,19 @@ export default function Dashboard() {
         p.active_days,
         0,
       );
+
       if (newDone === tasks.length && tasks.length > 0) {
         const p2 = await awardXP(user!.id, XP_PERFECT_DAY_BONUS, "perfect_day");
-        if (p2.level > p.level) setLevelToast(p2.level);
+        if (p2.level > p.level) {
+          setLevelToast(p2.level);
+          playSound("level"); // ⬅️ ЗВУК ПОВЫШЕНИЯ УРОВНЯ
+        }
         companion.trigger("allTasksDone");
       }
-      if (p.level > (progress?.level ?? 1)) setLevelToast(p.level);
+      if (p.level > (progress?.level ?? 1)) {
+        setLevelToast(p.level);
+        playSound("level"); // ⬅️ ЗВУК ПОВЫШЕНИЯ УРОВНЯ
+      }
       await refresh();
     } else {
       await updateTask(t.id, { completed: false, completed_at: null });
@@ -109,10 +124,16 @@ export default function Dashboard() {
     const rec = records.find((r) => r.habit_id === h.id);
     const nowCompleted = !rec?.completed;
     await toggleHabit(h.id, user.id, today, nowCompleted);
+
     if (nowCompleted) {
       const p = await awardXP(user.id, XP_HABIT, "habit");
+      // ⬇️ ЗВУК ПЕРСОНАЖА ПРИ ВЫПОЛНЕНИИ ПРИВЫЧКИ
+      playCharacterSound((profile?.character_id as any) || "luffy");
       companion.trigger("habitDone");
-      if (p.level > (progress?.level ?? 1)) setLevelToast(p.level);
+      if (p.level > (progress?.level ?? 1)) {
+        setLevelToast(p.level);
+        playSound("level"); // ⬅️ ЗВУК ПОВЫШЕНИЯ УРОВНЯ
+      }
     }
     const updated = await getRecordsForRange(user.id, today, today);
     setRecords(updated);
@@ -211,13 +232,19 @@ export default function Dashboard() {
                 >
                   <button
                     onClick={() => toggleTask(t)}
-                    className={`w-6 h-6 rounded-md border flex items-center justify-center transition ${t.completed ? "bg-accent border-accent text-bg" : "border-white/20"}`}
+                    className={`w-6 h-6 rounded-md border flex items-center justify-center transition ${
+                      t.completed
+                        ? "bg-accent border-accent text-bg"
+                        : "border-white/20"
+                    }`}
                   >
                     {t.completed && <Check size={14} />}
                   </button>
                   <div className="flex-1 min-w-0">
                     <div
-                      className={`font-medium ${t.completed ? "line-through text-muted" : ""}`}
+                      className={`font-medium ${
+                        t.completed ? "line-through text-muted" : ""
+                      }`}
                     >
                       {t.title}
                     </div>
@@ -258,7 +285,11 @@ export default function Dashboard() {
                   <button
                     key={h.id}
                     onClick={() => toggleHabitDone(h)}
-                    className={`p-3 rounded-xl border text-left transition ${done ? "bg-accent/15 border-accent/40" : "bg-white/5 border-white/10 hover:bg-white/10"}`}
+                    className={`p-3 rounded-xl border text-left transition ${
+                      done
+                        ? "bg-accent/15 border-accent/40"
+                        : "bg-white/5 border-white/10 hover:bg-white/10"
+                    }`}
                   >
                     <div className="text-lg">{h.icon}</div>
                     <div className="text-sm font-medium truncate">{h.name}</div>
