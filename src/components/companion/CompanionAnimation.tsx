@@ -1,7 +1,6 @@
-import { useAuth } from "../../hooks/useAuth"; // ⬅️ Добавлено для выбора персонажа
+import { useAuth } from "../../hooks/useAuth";
 import type { CompanionState, CharacterStage } from "../../data/characters";
 
-// ⬇️ ИМПОРТ ТРЕХ ВИДЕО
 import luffyVideo from "../../assets/videos/luffy.mp4";
 import itadoriVideo from "../../assets/videos/itadori.mp4";
 import midoriyaVideo from "../../assets/videos/midoriya.mp4";
@@ -9,7 +8,6 @@ import midoriyaVideo from "../../assets/videos/midoriya.mp4";
 interface Props {
   state: CompanionState;
   stage: CharacterStage;
-  characterColor: string;
   accentColor: string;
   size?: number;
   onTap?: () => void;
@@ -18,14 +16,12 @@ interface Props {
 export function CompanionAnimation({
   state,
   stage,
-  characterColor,
   accentColor,
   size = 240,
   onTap,
 }: Props) {
   const { profile } = useAuth();
 
-  // Выбираем видео в зависимости от персонажа в профиле
   const getVideoSrc = () => {
     const charId = profile?.character_id || "luffy";
     if (charId === "itadori") return itadoriVideo;
@@ -46,10 +42,8 @@ export function CompanionAnimation({
       role="button"
       tabIndex={0}
     >
-      {/* Свечение вокруг персонажа */}
       <div className="companion-aura" />
 
-      {/* Аксессуары (короны, молнии) */}
       {stage.accessories.map((acc, i) => (
         <span
           key={i}
@@ -64,9 +58,8 @@ export function CompanionAnimation({
         </span>
       ))}
 
-      {/* ⬇️ ВИДЕО ВМЕСТО SVG */}
       <video
-        key={profile?.character_id} // Перезапускает видео при смене персонажа
+        key={profile?.character_id}
         src={getVideoSrc()}
         autoPlay
         loop

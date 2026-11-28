@@ -41,7 +41,6 @@ export function AnimeCompanion({ compact = false }: { compact?: boolean }) {
         <CompanionAnimation
           state={companion.state}
           stage={stage}
-          characterColor={character.color}
           accentColor={stage.accent}
           size={size}
           onTap={() => companion.trigger("motivation")}
