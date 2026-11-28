@@ -24,7 +24,7 @@ import { useCompanion } from "../hooks/useCompanion";
 import { LevelUpToast } from "../components/LevelUpToast";
 import { Check, Clock, Flame } from "lucide-react";
 import { useNotifications } from "../hooks/useNotifications";
-import { playCharacterSound, playSound } from "../sounds"; // ⬅️ ИМПОРТ ЗВУКОВ
+import { playCharacterSound, playSound } from "../assets/sounds"; // ⬅️ ИМПОРТ ЗВУКОВ
 
 export default function Dashboard() {
   const { user, profile, progress, refresh } = useAuth();

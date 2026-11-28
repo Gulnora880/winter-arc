@@ -14,7 +14,7 @@ import type { Habit, HabitRecord } from "../types";
 import { Modal } from "../components/Modal";
 import { Plus, Trash2 } from "lucide-react";
 import { useCompanion } from "../hooks/useCompanion";
-import { playCharacterSound } from "../sounds"; // ⬅️ ИМПОРТ ЗВУКОВ
+import { playCharacterSound } from "../assets/sounds"; // ⬅️ ИМПОРТ ЗВУКОВ
 
 export default function Habits() {
   const { user, profile, refresh } = useAuth();
