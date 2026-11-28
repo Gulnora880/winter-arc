@@ -3,9 +3,6 @@ import { Play, Pause, RotateCcw } from "lucide-react";
 import { useCompanion } from "../hooks/useCompanion";
 import { useAuth } from "../hooks/useAuth";
 
-// ⬇️ ИМПОРТ ВАШЕГО ЗВУКА
-import focusEndSound from "../assets/sounds/focus-end.mp3";
-
 const SOUND_KEY = "wa.focus.sound";
 
 export default function Focus() {
@@ -61,16 +58,25 @@ export default function Focus() {
     setSecondsLeft(mins * 60);
   }
 
-  // ⬇️ НОВАЯ ФУНКЦИЯ ВОСПРОИЗВЕДЕНИЯ ЗВУКА
+  // Встроенный звук (генерируется кодом, файл не нужен)
   function beep() {
     if (!soundOn) return;
     try {
-      const audio = new Audio(focusEndSound);
-      audio.volume = 0.7;
-      audio.play();
-    } catch (e) {
-      console.error("Ошибка воспроизведения звука", e);
-    }
+      const ctx = new (
+        window.AudioContext || (window as any).webkitAudioContext
+      )();
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.connect(g);
+      g.connect(ctx.destination);
+      o.frequency.value = 660;
+      o.type = "sine";
+      g.gain.setValueAtTime(0.001, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.3, ctx.currentTime + 0.05);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.8);
+      o.start();
+      o.stop(ctx.currentTime + 0.8);
+    } catch {}
   }
 
   const mm = String(Math.floor(secondsLeft / 60)).padStart(2, "0");
